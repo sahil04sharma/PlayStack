@@ -33,7 +33,7 @@ npm run dev            # http://localhost:5000
 | `hr@ems.test` | HR Manager |
 | `employee@ems.test` | Employee |
 
-### Auth endpoints (this phase)
+### Auth endpoints
 
 | Method | Path | Auth | Description |
 |---|---|---|---|
@@ -41,6 +41,16 @@ npm run dev            # http://localhost:5000
 | `POST` | `/api/auth/logout` | No | Stateless logout ack |
 | `GET` | `/api/auth/me` | Bearer JWT | Current user |
 | `GET` | `/api/health` | No | Health check |
+
+### Employee endpoints (RBAC)
+
+| Method | Path | Roles | Description |
+|---|---|---|---|
+| `GET` | `/api/employees` | Super Admin, HR | List + search/filter/sort/pagination |
+| `POST` | `/api/employees` | Super Admin, HR | Create (HR → role `employee` only) |
+| `GET` | `/api/employees/:id` | All (Employee: self only) | Get one |
+| `PUT` | `/api/employees/:id` | All (Employee: self, phone/profileImage only) | Update |
+| `DELETE` | `/api/employees/:id` | Super Admin | Soft delete |
 
 ### Example login
 

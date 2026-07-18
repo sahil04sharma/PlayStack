@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import authRoutes from './routes/authRoutes';
+import employeeRoutes from './routes/employeeRoutes';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/employees', employeeRoutes);
 
 async function start(): Promise<void> {
   const mongoUri = process.env.MONGO_URI;
