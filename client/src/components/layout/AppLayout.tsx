@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { ROLE_BADGE_CLASS, ROLE_LABELS } from '../../lib/roles';
+import { ROLE_BADGE_CLASS, ROLE_LABELS, canManageEmployees } from '../../lib/roles';
 
-const navItems = [
+const allNavItems = [
   { to: '/', label: 'Dashboard', end: true },
-  { to: '/employees', label: 'Employees' },
+  { to: '/employees', label: 'Employees', managerOnly: true },
   { to: '/organization', label: 'Organization' },
   { to: '/profile', label: 'Profile' },
 ];
@@ -15,6 +15,11 @@ export function AppLayout() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = allNavItems.filter(
+    (item) =>
+      !item.managerOnly || (user && canManageEmployees(user.role))
+  );
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     [

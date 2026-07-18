@@ -1,6 +1,13 @@
 export type Role = 'super_admin' | 'hr_manager' | 'employee';
 export type Status = 'active' | 'inactive';
 
+export interface ManagerRef {
+  _id: string;
+  name: string;
+  email: string;
+  employeeId: string;
+}
+
 export interface EmployeeDTO {
   _id: string;
   employeeId: string;
@@ -13,7 +20,7 @@ export interface EmployeeDTO {
   salary: number;
   joiningDate: string;
   status: Status;
-  reportingManager: string | null;
+  reportingManager: string | ManagerRef | null;
   profileImage: string;
   createdAt: string;
   updatedAt: string;
