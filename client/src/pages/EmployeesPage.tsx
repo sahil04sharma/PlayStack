@@ -192,7 +192,7 @@ export function EmployeesPage() {
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-ink dark:text-ink-dark">
+          <h2 className="text-xl font-bold text-ink sm:text-2xl dark:text-ink-dark">
             Employees
           </h2>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -202,7 +202,7 @@ export function EmployeesPage() {
         {canManage && (
           <Link
             to="/employees/new"
-            className="inline-flex items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover"
+            className="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover sm:w-auto"
           >
             Add employee
           </Link>
@@ -290,7 +290,88 @@ export function EmployeesPage() {
       </div>
 
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
-        <div className="overflow-x-auto">
+        {/* Mobile cards */}
+        <div className="divide-y divide-slate-100 md:hidden dark:divide-slate-800">
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="p-4">
+                <div className="h-16 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
+              </div>
+            ))
+          ) : rows.length === 0 ? (
+            <p className="px-4 py-10 text-center text-sm text-slate-500">
+              No employees match your filters
+            </p>
+          ) : (
+            rows.map((emp) => (
+              <div key={emp._id} className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-ink dark:text-ink-dark">
+                      {emp.name}
+                    </p>
+                    <p className="truncate text-sm text-slate-500">{emp.email}</p>
+                    <p className="mt-1 font-mono text-xs text-slate-400">
+                      {emp.employeeId}
+                    </p>
+                  </div>
+                  <span
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${ROLE_BADGE_CLASS[emp.role]}`}
+                  >
+                    {ROLE_LABELS[emp.role]}
+                  </span>
+                </div>
+                <dl className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300">
+                  <div>
+                    <dt className="text-slate-400">Department</dt>
+                    <dd className="font-medium">{emp.department}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-slate-400">Status</dt>
+                    <dd
+                      className={
+                        emp.status === 'active'
+                          ? 'font-medium text-emerald-600 dark:text-emerald-400'
+                          : 'font-medium'
+                      }
+                    >
+                      {emp.status}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-slate-400">Joined</dt>
+                    <dd className="font-medium">{formatDate(emp.joiningDate)}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-slate-400">Salary</dt>
+                    <dd className="font-medium">{formatSalary(emp.salary)}</dd>
+                  </div>
+                </dl>
+                <div className="mt-3 flex gap-2">
+                  <Link
+                    to={`/employees/${emp._id}/edit`}
+                    className="flex-1 rounded-lg border border-slate-200 py-2 text-center text-xs font-semibold text-accent dark:border-slate-600"
+                  >
+                    Edit
+                  </Link>
+                  {canDelete && (
+                    <button
+                      type="button"
+                      disabled={deletingId === emp._id}
+                      onClick={() => void onDelete(emp)}
+                      className="flex-1 rounded-lg border border-red-200 py-2 text-xs font-semibold text-red-600 disabled:opacity-50 dark:border-red-900"
+                    >
+                      {deletingId === emp._id ? '…' : 'Delete'}
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden overflow-x-auto md:block">
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-950/60">
               <tr>
@@ -425,13 +506,13 @@ export function EmployeesPage() {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-3 dark:border-slate-700 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-slate-500">{rangeLabel}</p>
-          <div className="flex items-center gap-2">
+          <p className="text-center text-xs text-slate-500 sm:text-left">{rangeLabel}</p>
+          <div className="flex items-center justify-center gap-2">
             <button
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => updateParams({ page: page - 1 })}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold disabled:opacity-40 dark:border-slate-600"
+              className="min-w-[5.5rem] rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold disabled:opacity-40 dark:border-slate-600"
             >
               Previous
             </button>
@@ -442,7 +523,7 @@ export function EmployeesPage() {
               type="button"
               disabled={page >= pages || loading}
               onClick={() => updateParams({ page: page + 1 })}
-              className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold disabled:opacity-40 dark:border-slate-600"
+              className="min-w-[5.5rem] rounded-lg border border-slate-300 px-3 py-2 text-xs font-semibold disabled:opacity-40 dark:border-slate-600"
             >
               Next
             </button>

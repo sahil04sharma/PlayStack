@@ -43,7 +43,7 @@ export function OrganizationPage() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-ink dark:text-ink-dark">
+        <h2 className="text-xl font-bold text-ink sm:text-2xl dark:text-ink-dark">
           Organization
         </h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -59,7 +59,7 @@ export function OrganizationPage() {
         </div>
       )}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900 sm:p-5">
+      <div className="rounded-xl border border-slate-200 bg-white p-3 sm:p-4 dark:border-slate-700 dark:bg-slate-900 sm:p-5">
         {loading ? (
           <div className="flex justify-center py-16">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent border-t-transparent" />

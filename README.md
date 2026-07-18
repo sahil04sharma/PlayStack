@@ -75,7 +75,7 @@ npm run dev            # http://localhost:5173
 
 | Method | Path | Roles | Description |
 |---|---|---|---|
-| `GET` | `/api/dashboard/stats` | Authenticated | Totals + department breakdown |
+| `GET` | `/api/dashboard/stats` | Super Admin, HR | Totals + department breakdown |
 
 ### List query params
 `search`, `department`, `role`, `status`, `sortBy` (`joiningDate|name|email|salary|createdAt`), `order` (`asc|desc`), `page`, `limit`

@@ -14,8 +14,8 @@ export function OrgTreeItem({ node, depth = 0 }: OrgTreeItemProps) {
   return (
     <li>
       <div
-        className="flex items-start gap-2 rounded-lg px-2 py-2 hover:bg-slate-50 dark:hover:bg-slate-800/60"
-        style={{ paddingLeft: `${depth * 1.25 + 0.5}rem` }}
+        className="flex items-start gap-2 rounded-lg px-1 py-2 hover:bg-slate-50 sm:px-2 dark:hover:bg-slate-800/60"
+        style={{ paddingLeft: `${Math.min(depth, 4) * 0.75 + 0.25}rem` }}
       >
         {hasChildren ? (
           <button
@@ -50,7 +50,7 @@ export function OrgTreeItem({ node, depth = 0 }: OrgTreeItemProps) {
               {node.status}
             </span>
           </div>
-          <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-0.5 break-words text-xs text-slate-500 sm:text-sm dark:text-slate-400">
             {node.designation} · {node.department} · {node.employeeId}
           </p>
           {hasChildren && (
@@ -63,7 +63,7 @@ export function OrgTreeItem({ node, depth = 0 }: OrgTreeItemProps) {
       </div>
 
       {hasChildren && open && (
-        <ul className="border-l border-slate-200 ml-5 dark:border-slate-700">
+        <ul className="ml-3 border-l border-slate-200 sm:ml-5 dark:border-slate-700">
           {node.directReports.map((child) => (
             <OrgTreeItem key={child._id} node={child} depth={depth + 1} />
           ))}

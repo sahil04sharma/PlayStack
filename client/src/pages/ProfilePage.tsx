@@ -100,7 +100,7 @@ export function ProfilePage() {
   return (
     <div className="mx-auto max-w-2xl">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-ink dark:text-ink-dark">Profile</h2>
+        <h2 className="text-xl font-bold text-ink sm:text-2xl dark:text-ink-dark">Profile</h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           You can update your phone number and profile image. Other fields are
           managed by HR/Admin.

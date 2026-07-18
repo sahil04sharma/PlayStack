@@ -10,19 +10,64 @@
   --color-ink-dark: #e2e8f0;
   --color-accent: #4f46e5;
   --color-accent-hover: #4338ca;
+  --color-play: #a78bfa;
+  --color-play-hover: #8b5cf6;
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-game: "Chakra Petch", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
   html {
     font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply m-0 min-h-screen bg-surface text-ink antialiased dark:bg-surface-dark dark:text-ink-dark;
+    @apply m-0 min-h-screen overflow-x-hidden bg-surface text-ink antialiased dark:bg-surface-dark dark:text-ink-dark;
   }
 
   #root {
-    @apply min-h-screen;
+    @apply min-h-screen min-h-dvh overflow-x-hidden;
   }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
+}
+
+@keyframes login-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes login-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(8px, -12px);
+  }
+}
+
+.login-rise {
+  animation: login-rise 0.7s ease-out both;
+}
+
+.login-rise-delay {
+  animation: login-rise 0.7s ease-out 0.12s both;
+}
+
+.login-drift {
+  animation: login-drift 8s ease-in-out infinite;
 }
