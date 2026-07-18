@@ -4,6 +4,32 @@ Full-stack hiring assignment: secure auth, RBAC, employee CRUD, org hierarchy, a
 
 **API reference:** see [`API_DOCS.md`](./API_DOCS.md) for every endpoint (method, roles, request/response shapes).
 
+## Screenshots
+
+Screenshots live in [`assests/`](./assests/).
+
+### App
+
+| Login | Admin dashboard |
+| :---: | :---: |
+| ![Login page](./assests/login-page.png) | ![Admin dashboard](./assests/admin-dashboard.png) |
+
+| Employee list |
+| :---: |
+| ![Employee list](./assests/employee-list.png) |
+
+### Organization tree
+
+**Current (committed) UI** — nested expand/collapse hierarchy:
+
+![Organization tree — current version](./assests/organization-tree.png)
+
+**Enhanced command-tree option** — same data, game-style skill tree with tiers, class labels, and light effects (dark + light). This is an alternate presentation we can ship as well:
+
+| Dark | Light |
+| :---: | :---: |
+| ![Command tree dark](./assests/organization-command-tree-dark.png) | ![Command tree light](./assests/organization-command-tree-light.png) |
+
 ## Structure
 
 ```
