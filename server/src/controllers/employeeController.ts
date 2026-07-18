@@ -2,6 +2,11 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import Employee from '../models/Employee';
 import { Role } from '../types';
+import { wouldCreateCycle } from '../utils/hierarchy';
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 async function nextEmployeeId(): Promise<string> {
   const count = await Employee.collection.countDocuments({});
@@ -23,9 +28,10 @@ export const getAllEmployees = async (req: Request, res: Response): Promise<void
   const query: Record<string, unknown> = {};
 
   if (search) {
+    const safe = escapeRegex(search.trim());
     query.$or = [
-      { name: { $regex: search, $options: 'i' } },
-      { email: { $regex: search, $options: 'i' } },
+      { name: { $regex: safe, $options: 'i' } },
+      { email: { $regex: safe, $options: 'i' } },
     ];
   }
   if (department) query.department = department;
@@ -136,9 +142,18 @@ export const createEmployee = async (req: Request, res: Response): Promise<void>
     return;
   }
 
+  if (reportingManager) {
+    const managerExists = await Employee.findById(reportingManager);
+    if (!managerExists) {
+      res.status(404).json({ message: 'Reporting manager not found' });
+      return;
+    }
+  }
+
   const passwordHash = await bcrypt.hash(password, 10);
   const employeeId = await nextEmployeeId();
 
+  // New employee has no subordinates yet — cycle only if manager === self (impossible on create)
   const employee = await Employee.create({
     employeeId,
     name,
@@ -217,6 +232,22 @@ export const updateEmployee = async (req: Request, res: Response): Promise<void>
 
   if (body.reportingManager === '') {
     body.reportingManager = null;
+  }
+
+  if (body.reportingManager) {
+    const managerId = String(body.reportingManager);
+    const managerExists = await Employee.findById(managerId);
+    if (!managerExists) {
+      res.status(404).json({ message: 'Reporting manager not found' });
+      return;
+    }
+    const cycle = await wouldCreateCycle(String(id), managerId);
+    if (cycle) {
+      res.status(400).json({
+        message: 'This would create a circular reporting chain',
+      });
+      return;
+    }
   }
 
   const updated = await Employee.findByIdAndUpdate(id, body, {

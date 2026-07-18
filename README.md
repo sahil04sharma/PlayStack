@@ -51,6 +51,17 @@ npm run dev            # http://localhost:5000
 | `GET` | `/api/employees/:id` | All (Employee: self only) | Get one |
 | `PUT` | `/api/employees/:id` | All (Employee: self, phone/profileImage only) | Update |
 | `DELETE` | `/api/employees/:id` | Super Admin | Soft delete |
+| `GET` | `/api/employees/:id/reportees` | All (Employee: self only) | Direct reports |
+| `PATCH` | `/api/employees/:id/manager` | Super Admin, HR | Set manager (cycle-safe) |
+
+### Organization
+
+| Method | Path | Roles | Description |
+|---|---|---|---|
+| `GET` | `/api/organization/tree` | All | Full tree (Employee: own branch) |
+
+### List query params
+`search`, `department`, `role`, `status`, `sortBy` (`joiningDate|name|email|salary|createdAt`), `order` (`asc|desc`), `page`, `limit`
 
 ### Example login
 
