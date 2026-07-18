@@ -36,7 +36,9 @@ npm install
 npm run dev            # http://localhost:5173
 ```
 
-`VITE_API_URL` defaults to `http://localhost:5000/api`.
+Local: `VITE_API_URL=http://localhost:5000/api`
+
+**Vercel production:** set env var `VITE_API_URL` to your Railway API base **including `/api`**, e.g. `https://your-service.up.railway.app/api`, then redeploy (Vite bakes this in at build time).
 
 ### Seeded credentials (password for all: `Password123!`)
 

@@ -17,14 +17,22 @@ app.use(cors(getCorsOptions()));
 app.options(/.*/, cors(getCorsOptions()));
 app.use(express.json({ limit: '2mb' }));
 
-app.get('/api/health', (_req, res) => {
+app.get(['/api/health', '/health'], (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Mount under /api (preferred) and at root (so Railway URL without /api still works)
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
 app.use('/api/employees', employeeRoutes);
+app.use('/employees', employeeRoutes);
+
 app.use('/api/organization', organizationRoutes);
+app.use('/organization', organizationRoutes);
+
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 async function start(): Promise<void> {
   const mongoUri = process.env.MONGO_URI;
