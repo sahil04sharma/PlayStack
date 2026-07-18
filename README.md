@@ -6,24 +6,35 @@ Full-stack hiring assignment: secure auth, RBAC, employee CRUD, org hierarchy, a
 
 ```
 /server   → Express + TypeScript + Mongoose API
-/client   → React + TypeScript + Tailwind (coming next)
+/client   → React + TypeScript + Tailwind (Vite)
 ```
 
-## Server setup (current phase)
+## Server setup
 
 ### Prerequisites
 - Node.js 18+
-- MongoDB running locally (or update `MONGO_URI`)
+- MongoDB Atlas (or local) via `MONGO_URI`
 
 ### Install & run
 
 ```bash
 cd server
-cp .env.example .env   # already created for local dev
+cp .env.example .env
 npm install
-npm run seed           # creates 3 test users
+npm run seed
 npm run dev            # http://localhost:5000
 ```
+
+## Client setup
+
+```bash
+cd client
+cp .env.example .env
+npm install
+npm run dev            # http://localhost:5173
+```
+
+`VITE_API_URL` defaults to `http://localhost:5000/api`.
 
 ### Seeded credentials (password for all: `Password123!`)
 
@@ -73,8 +84,8 @@ curl -X POST http://localhost:5000/api/auth/login ^
 
 ## Tech stack
 - Backend: Node.js, Express, TypeScript, MongoDB/Mongoose, JWT, bcrypt
-- Dev runner: `tsx` (watch mode)
-- Frontend: React + TypeScript + Tailwind (next)
+- Frontend: React, TypeScript, Vite, Tailwind CSS, React Router, react-hook-form + zod
+- Dev runners: `tsx` (server), Vite (client)
 
 ## Notes
 - JWT is returned in the login response body. For this assignment, storing it in `localStorage` on the client is acceptable; httpOnly cookies are preferable in production (XSS tradeoff noted here).
