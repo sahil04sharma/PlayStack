@@ -71,6 +71,12 @@ npm run dev            # http://localhost:5173
 |---|---|---|---|
 | `GET` | `/api/organization/tree` | All | Full tree (Employee: own branch) |
 
+### Dashboard
+
+| Method | Path | Roles | Description |
+|---|---|---|---|
+| `GET` | `/api/dashboard/stats` | Authenticated | Totals + department breakdown |
+
 ### List query params
 `search`, `department`, `role`, `status`, `sortBy` (`joiningDate|name|email|salary|createdAt`), `order` (`asc|desc`), `page`, `limit`
 

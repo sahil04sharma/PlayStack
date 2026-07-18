@@ -5,6 +5,7 @@ import { connectDB } from './config/db';
 import authRoutes from './routes/authRoutes';
 import employeeRoutes from './routes/employeeRoutes';
 import organizationRoutes from './routes/organizationRoutes';
+import dashboardRoutes from './routes/dashboardRoutes';
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
 app.use('/api/organization', organizationRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 async function start(): Promise<void> {
   const mongoUri = process.env.MONGO_URI;
