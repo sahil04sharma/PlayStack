@@ -104,7 +104,7 @@ curl -X POST http://localhost:5000/api/auth/login ^
 - Backend is the source of truth for RBAC; the UI hides actions by role but never replaces server checks.
 - Org tree is built from one `find()` in memory (no recursive DB walks per node). Manager updates run a cycle check first.
 - Dashboard stats are Super Admin / HR only; Employees see a personal home dashboard instead.
-- CORS reflects the request Origin in code (works with Vercel + Railway without env allow-lists).
+- CORS reflects the request Origin when env is empty; otherwise allow-list comes only from `CLIENT_URL` or `CLIENT_ORIGINS` (comma-separated). Set your Vercel URL in Railway env — no code change needed.
 
 ## Tests
 
