@@ -3,6 +3,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -12,6 +13,19 @@ import { isAxiosError } from 'axios';
 import { fetchDashboardStats } from '../api/dashboard';
 import type { DashboardStats } from '../types';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+
+/** Soft multi-colors readable on light and dark backgrounds */
+const CHART_COLORS = [
+  '#93C5FD', // soft blue
+  '#6EE7B7', // soft mint
+  '#FCD34D', // soft amber
+  '#F9A8D4', // soft pink
+  '#A5B4FC', // soft indigo
+  '#67E8F9', // soft cyan
+  '#FDBA74', // soft peach
+  '#C4B5FD', // soft violet
+];
 
 function StatCard({
   label,
@@ -38,6 +52,7 @@ function StatCard({
 
 export function DashboardPage() {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +91,17 @@ export function DashboardPage() {
       department: d._id || 'Unknown',
       count: d.count,
     })) ?? [];
+
+  const isDark = theme === 'dark';
+  const axisColor = isDark ? '#94A3B8' : '#64748B';
+  const gridColor = isDark ? '#334155' : '#E2E8F0';
+  const tooltipStyle = {
+    borderRadius: 8,
+    border: isDark ? '1px solid #334155' : '1px solid #E2E8F0',
+    backgroundColor: isDark ? '#0F172A' : '#FFFFFF',
+    color: isDark ? '#E2E8F0' : '#1E293B',
+    fontSize: 13,
+  };
 
   return (
     <div>
@@ -137,22 +163,33 @@ export function DashboardPage() {
           ) : (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                 <XAxis
                   dataKey="department"
-                  tick={{ fontSize: 12 }}
-                  className="fill-slate-500"
+                  tick={{ fontSize: 12, fill: axisColor }}
+                  stroke={gridColor}
                 />
-                <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                <YAxis
+                  allowDecimals={false}
+                  tick={{ fontSize: 12, fill: axisColor }}
+                  stroke={gridColor}
+                />
                 <Tooltip
-                  cursor={{ fill: 'rgba(79, 70, 229, 0.08)' }}
-                  contentStyle={{
-                    borderRadius: 8,
-                    border: '1px solid #e2e8f0',
-                    fontSize: 13,
+                  cursor={{
+                    fill: isDark
+                      ? 'rgba(148, 163, 184, 0.12)'
+                      : 'rgba(148, 163, 184, 0.16)',
                   }}
+                  contentStyle={tooltipStyle}
                 />
-                <Bar dataKey="count" fill="#4F46E5" radius={[6, 6, 0, 0]} name="Employees" />
+                <Bar dataKey="count" radius={[6, 6, 0, 0]} name="Employees">
+                  {chartData.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={CHART_COLORS[index % CHART_COLORS.length]}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           )}
