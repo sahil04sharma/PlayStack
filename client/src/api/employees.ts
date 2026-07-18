@@ -63,3 +63,20 @@ export async function updateEmployee(
 export async function deleteEmployee(id: string): Promise<void> {
   await api.delete(`/employees/${id}`);
 }
+
+export interface ImportResult {
+  message: string;
+  created: number;
+  failed: number;
+  createdEmails: string[];
+  errors: { row: number; email?: string; reason: string }[];
+}
+
+export async function importEmployeesCsv(file: File): Promise<ImportResult> {
+  const form = new FormData();
+  form.append('file', file);
+  const { data } = await api.post<ImportResult>('/employees/import', form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return data;
+}

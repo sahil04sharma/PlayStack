@@ -1,0 +1,3 @@
+name,email,phone,password,department,designation,salary,joiningDate,status,role
+Casey Import,casey.import@ems.test,9111222333,Password123!,Engineering,Intern,40000,2024-08-01,active,employee
+Riley Bulk,riley.bulk@ems.test,9111222444,Password123!,Sales,Associate,45000,2024-09-01,active,employee

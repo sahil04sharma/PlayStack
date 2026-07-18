@@ -2,6 +2,8 @@
 
 Full-stack hiring assignment: secure auth, RBAC, employee CRUD, org hierarchy, and dashboard.
 
+**API reference:** see [`API_DOCS.md`](./API_DOCS.md) for every endpoint (method, roles, request/response shapes).
+
 ## Structure
 
 ```
@@ -59,6 +61,7 @@ npm run dev            # http://localhost:5173
 |---|---|---|---|
 | `GET` | `/api/employees` | Super Admin, HR | List + search/filter/sort/pagination |
 | `POST` | `/api/employees` | Super Admin, HR | Create (HR → role `employee` only) |
+| `POST` | `/api/employees/import` | Super Admin, HR | CSV bulk import (`multipart/form-data`, field `file`) |
 | `GET` | `/api/employees/:id` | All (Employee: self only) | Get one |
 | `PUT` | `/api/employees/:id` | All (Employee: self, phone/profileImage only) | Update |
 | `DELETE` | `/api/employees/:id` | Super Admin | Soft delete |
@@ -96,3 +99,40 @@ curl -X POST http://localhost:5000/api/auth/login ^
 ## Notes
 - JWT is returned in the login response body. For this assignment, storing it in `localStorage` on the client is acceptable; httpOnly cookies are preferable in production (XSS tradeoff noted here).
 - Soft-delete is modeled via `isDeleted` on Employee; default queries exclude deleted docs.
+- Backend is the source of truth for RBAC; the UI hides actions by role but never replaces server checks.
+- Org tree is built from one `find()` in memory (no recursive DB walks per node). Manager updates run a cycle check first.
+- Dashboard stats are Super Admin / HR only; Employees see a personal home dashboard instead.
+- CORS reflects the request Origin in code (works with Vercel + Railway without env allow-lists).
+
+## Tests
+
+```bash
+cd server
+npm test
+```
+
+Covers RBAC middleware and circular reporting detection.
+
+## Docker (bonus)
+
+```bash
+docker compose up --build
+```
+
+- Client: http://localhost:5173  
+- API: http://localhost:5000  
+- MongoDB: localhost:27017  
+
+After containers are up, seed once:
+
+```bash
+cd server
+# temporarily point MONGO_URI at localhost:27017/PlayStack if needed
+npm run seed
+```
+
+## CSV import (bonus)
+
+On the Employees page (Admin/HR), use **Import CSV**. Sample file: `server/samples/employees-import.csv`.
+
+Required columns: `name,email,phone,password,department,designation,salary,joiningDate,status,role`

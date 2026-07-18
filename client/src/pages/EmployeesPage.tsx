@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { isAxiosError } from 'axios';
-import { deleteEmployee, fetchEmployees } from '../api/employees';
+import { deleteEmployee, fetchEmployees, importEmployeesCsv } from '../api/employees';
 import { useAuth } from '../context/AuthContext';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { formatDate, formatSalary, managerLabel } from '../lib/format';
@@ -75,6 +75,7 @@ export function EmployeesPage() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
 
   const canManage = user ? canManageEmployees(user.role) : false;
   const canDelete = user ? canDeleteEmployees(user.role) : false;
@@ -152,6 +153,37 @@ export function EmployeesPage() {
     }
   };
 
+  const onImport = async (file: File | undefined) => {
+    if (!file || !canManage) return;
+    setImporting(true);
+    setError(null);
+    setMessage(null);
+    try {
+      const result = await importEmployeesCsv(file);
+      setMessage(
+        `Import done: ${result.created} created, ${result.failed} failed.`
+      );
+      if (result.errors.length) {
+        setError(
+          result.errors
+            .slice(0, 3)
+            .map((e) => `Row ${e.row}: ${e.reason}`)
+            .join(' · ')
+        );
+      }
+      await load();
+    } catch (err) {
+      setError(
+        isAxiosError(err)
+          ? (err.response?.data as { message?: string })?.message ||
+              'Import failed'
+          : 'Import failed'
+      );
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const onDelete = async (employee: EmployeeDTO) => {
     if (!canDelete) return;
     const ok = window.confirm(
@@ -200,12 +232,28 @@ export function EmployeesPage() {
           </p>
         </div>
         {canManage && (
-          <Link
-            to="/employees/new"
-            className="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover sm:w-auto"
-          >
-            Add employee
-          </Link>
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <label className="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold dark:border-slate-600 sm:w-auto">
+              {importing ? 'Importing…' : 'Import CSV'}
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                disabled={importing}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  void onImport(file);
+                  e.target.value = '';
+                }}
+              />
+            </label>
+            <Link
+              to="/employees/new"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover sm:w-auto"
+            >
+              Add employee
+            </Link>
+          </div>
         )}
       </div>
 
